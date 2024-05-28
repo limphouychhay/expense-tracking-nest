@@ -1,6 +1,7 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 
-import { BaseEntity } from './../../../core/base.entity';
+import { BaseEntity } from 'src/core/base.entity';
+import { Transaction } from 'src/api/transaction/entities/transaction.entity';
 
 @Entity()
 export class User extends BaseEntity {
@@ -21,4 +22,7 @@ export class User extends BaseEntity {
 
   @Column({ type: 'varchar', length: 500, nullable: true })
   refreshToken: string;
+
+  @OneToMany(() => Transaction, (transaction) => transaction.user)
+  transactions: Transaction[];
 }
