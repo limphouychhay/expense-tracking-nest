@@ -4,6 +4,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 
 import { Transaction } from './entities/transaction.entity';
 
+import { PaginationOptionsInterface } from 'src/common/paginate/paginate-option.interface';
+
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { UpdateTransactionDto } from './dto/update-transaction.dto';
 
@@ -32,15 +34,22 @@ export class TransactionService {
     }
   }
 
-  async findAllByUser(userId: number) {
+  async findAllByUser(userId: number, options: PaginationOptionsInterface) {
     try {
-      const transactions = await this.transactionRepo.find({
+      const { limit, page } = options;
+      const [transactions, total] = await this.transactionRepo.findAndCount({
         where: { user: { id: userId } },
+        order: { title: 'DESC' },
+        take: limit,
+        skip: page,
       });
       if (transactions.length <= 0) {
         return [];
       }
-      return transactions;
+      return {
+        transactions,
+        total,
+      };
     } catch (error) {
       throw error;
     }

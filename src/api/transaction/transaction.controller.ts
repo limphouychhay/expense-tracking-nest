@@ -8,6 +8,7 @@ import {
   Delete,
   UseGuards,
   Req,
+  Query,
 } from '@nestjs/common';
 import { Request } from 'express';
 
@@ -35,8 +36,15 @@ export class TransactionController {
   }
 
   @Get('')
-  findAll(@Req() req: Request) {
-    return this.transactionService.findAllByUser(req.user['sub']);
+  findAll(
+    @Req() req: Request,
+    @Query('limit') limit: string,
+    @Query('page') page: string,
+  ) {
+    return this.transactionService.findAllByUser(req.user['sub'], {
+      limit: +limit || 10,
+      page: +page || 0,
+    });
   }
 
   @Get(':id')

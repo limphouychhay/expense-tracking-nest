@@ -1,13 +1,11 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToOne } from 'typeorm';
+import { Exclude } from 'class-transformer';
 
 import { BaseEntity } from 'src/core/base.entity';
 import { User } from 'src/api/user/entities/user.entity';
 
-@Entity()
+@Entity({ name: 'transaction' })
 export class Transaction extends BaseEntity {
-  @PrimaryGeneratedColumn()
-  id: number;
-
   @Column({ type: 'varchar', length: 255, nullable: false })
   type: string;
 
@@ -21,5 +19,6 @@ export class Transaction extends BaseEntity {
   category: string;
 
   @ManyToOne(() => User, (user) => user.transactions)
+  @Exclude()
   user: User;
 }
